@@ -4,13 +4,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from eventapp.models import User,Admin, Event, Book_events
 import datetime
 
-# Create your views here.
 
-#User Registration / Login Page
+
 def index(request):
     return render(request,'registration.html')
 
-#User Home Page
 def user_home(request):
     if 'uname' in request.session:
         data = {'name':request.session.get('uname')}
@@ -23,7 +21,6 @@ def user_home(request):
         data = {'status':'You need to login first'}
         return render(request,'registration.html',context=data)
 
-#User Event Page
 def user_event(request):
     if 'uname' in request.session:
         event = Event.objects.all()
@@ -33,7 +30,6 @@ def user_event(request):
         data = {'status':'You need to login first'}
         return render(request,'registration.html',context=data)
 
-#User Ground Booking Page
 def event_booking(request):
     if 'uname' in request.session:
         data = {'date':datetime.date.today()}
@@ -42,7 +38,6 @@ def event_booking(request):
         data = {'status':'You need to login first'}
         return render(request,'registration.html',context=data)
 
-#User Logout
 def user_logout(request):
     if 'uname' in request.session:
         del request.session['uname']
@@ -52,11 +47,11 @@ def user_logout(request):
 
     return render(request,'registration.html')
 
-#Admin Login Page
+
 def admin_login(request):
     return render(request,'admin_login.html')
 
-#Admin Home Page
+
 def admin_home(request):
     if 'aname' in request.session:
         data = {'name':request.session.get('aname')}
@@ -65,7 +60,7 @@ def admin_home(request):
         data = {'status':'You need to login first'}
         return render(request,'admin_login.html',context=data)
 
-#Admin View Bookings
+
 def admin_booking(request):
     if 'aname' in request.session:
         booking = Book_events.objects.all()
@@ -75,7 +70,7 @@ def admin_booking(request):
         data = {'status':'You need to login first'}
         return render(request,'admin_login.html',context=data)
 
-#Admin Manage Event Page
+
 def admin_event(request):
     if 'aname' in request.session:
         event = Event.objects.all()
@@ -89,7 +84,7 @@ def admin_event(request):
         data = {'status':'You need to login first'}
         return render(request,'admin_login.html',context=data)
 
-#Admin Update Event Page
+
 def update_event(request,id):
     if 'aname' in request.session:
         event = Event.objects.get(eid=id)
@@ -101,14 +96,14 @@ def update_event(request,id):
         data = {'status':'You need to login first'}
         return render(request,'admin_login.html',context=data)
 
-#Admin Add Event Page
+
 def add_event(request):
     if 'aname' in request.session:
         return render(request,'add_event.html')
     else:
         return HttpResponse('Something went wrong')
 
-#Admin Logout
+
 def admin_logout(request):
     if 'aname' in request.session:
         del request.session['aname']
@@ -118,7 +113,6 @@ def admin_logout(request):
 
     return render(request,'admin_login.html')
 
-#BACKEND -> For User Registration
 def test(request):
     if request.method == 'POST':
         name = request.POST.get('uname')
@@ -138,7 +132,6 @@ def test(request):
     else:
         return HttpResponse("Something went wrong!!!!!")
 
-#BACKEND -> For User Login
 def login_user(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -160,7 +153,7 @@ def login_user(request):
     else:
         return HttpResponse("Something went wrong!!!!!")
 
-#BACKEND -> For Admin Login
+#
 # def login_admin(request):
 #     if request.method == 'POST':
 #         name = request.POST.get('name')
@@ -189,15 +182,13 @@ def login_admin(request):
     if request.method == 'POST':
         uname = request.POST.get('name')
         password = request.POST.get('password')
-
-        # Authenticate the superuser
         user = authenticate(request, username=uname, password=password)
         
         if user is not None:
-            if user.is_superuser:  # Check if the user is a superuser
-                login(request, user)  # Log the user in
-                request.session['aname'] = uname  # Save username in session
-                return admin_home(request)  # Redirect to admin home page
+            if user.is_superuser:  
+                login(request, user)  
+                request.session['aname'] = uname  
+                return admin_home(request)  
             else:
                 data = {'status': "You are not authorized to access this page."}
                 return render(request, 'admin_login.html', context=data)
@@ -208,7 +199,6 @@ def login_admin(request):
     else:
         return HttpResponse("Invalid request method")
 
-#BACKEND -> For Ground Booking
 def db_events_booking(request):
     if request.method == 'POST':
         mobile = request.POST.get('mobile')
@@ -228,7 +218,6 @@ def db_events_booking(request):
     else:
         return HttpResponse("Something went wrong!!!!!")
 
-#BACKEND -> For Update Event
 def db_update_event(request,id):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -248,7 +237,7 @@ def db_update_event(request,id):
     else:
         return HttpResponse("Something went wrong!!!!!")
 
-#BACKEND -> For Delete Events
+
 def db_delete_event(request,id):
     if request.method == 'GET':
         event = Event.objects.get(eventid=id)
@@ -259,7 +248,6 @@ def db_delete_event(request,id):
     else:
         return HttpResponse("Something went wrong!!!!!")
 
-#BACKEND -> For Add Event
 def db_add_event(request):
     if request.method == 'POST':
         name = request.POST.get('name')
